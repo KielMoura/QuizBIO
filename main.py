@@ -7,7 +7,7 @@ from kivy.core.window import Window
 Window.size= 320, 650
 
 # Definição do gerenciador de tela
-class ScreenManager(ScreenManager):
+class JanelaGerenciadora(ScreenManager):
     pass
 
 # Definição da tela principal
@@ -96,10 +96,10 @@ class QuestionsScreen(Screen):
 # Definição do aplicativo
 class QuestionsApp(MDApp):
     def build(self):
-        self.title = "QuizBioquimica"
-        screen_manager = Builder.load_file('main.kv')
-        return screen_manager
-#        return Builder.load_file('main.kv')
+        self.title = "QuizBio"
+#        screen_manager = Builder.load_file('main.kv')
+#        return screen_manager
+        return Builder.load_file('main.kv')
 
 QuestionsApp().run()
 
