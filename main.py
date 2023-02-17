@@ -1,8 +1,10 @@
 from kivy.app import App
+from kivymd.app import MDApp
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.properties import NumericProperty, StringProperty, ListProperty
 from kivy.clock import Clock
 from kivy.lang import Builder
+from kivymd.uix.button import MDRectangleFlatButton
 
 import random
 
@@ -13,15 +15,13 @@ class Quiz(Screen):
     question_number = NumericProperty(1)
     question = StringProperty()
     correct_option = NumericProperty()
-    option1 = StringProperty('Option 1')
-    option2 = StringProperty('Option 2')
-    option3 = StringProperty('Option 3')
-    option4 = StringProperty('Option 4')
-    options = ['option1', 'option2', 'option3', 'option4']
+    option1 = StringProperty()
+    option2 = StringProperty()
+    option3 = StringProperty()
+    option4 = StringProperty()
+    options = [option1, option2, option3, option4]
     
-    # Resto da implementação da classe...
-
-
+    
     def on_enter(self, *args):
         self.load_question()
 
