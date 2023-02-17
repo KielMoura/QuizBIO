@@ -1,13 +1,17 @@
+from kivy.lang import Builder
 from kivy.app import App
-from kivymd.app import MDApp
 from kivy.uix.screenmanager import Screen, ScreenManager
+from kivymd.theming import ThemeManager
 from kivy.properties import NumericProperty, StringProperty, ListProperty
 from kivy.clock import Clock
-from kivy.lang import Builder
-from kivymd.uix.button import MDRectangleFlatButton
+#from kivymd.uix.button import MDRectangleFlatButton
 
 import random
 
+class MyApp(App):
+    def build(self):
+        pass
+    
 Builder.load_file("main.kv")
 
 class Quiz(Screen):
@@ -69,7 +73,15 @@ sm.add_widget(Result(name="result"))
 
 class QuizApp(App):
     def build(self):
+    # Initialize KivyMD's ThemeManager
+        self.theme_cls.primary_palette = "Green"
+        self.theme_cls.primary_hue = "500"
         return sm
 
 if __name__ == "__main__":
-    QuizApp().run()
+    try:
+        QuizApp().run()
+        
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
