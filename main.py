@@ -17,7 +17,7 @@ class Quiz(Screen):
     option2 = StringProperty('Option 2')
     option3 = StringProperty('Option 3')
     option4 = StringProperty('Option 4')
-    options = [option1, option2, option3, option4]
+    options = ['option1', 'option2', 'option3', 'option4']
     
     # Resto da implementação da classe...
 
