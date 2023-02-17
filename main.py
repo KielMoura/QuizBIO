@@ -1,47 +1,11 @@
 from kivy.app import App
-from kivy.uix.screenmanager import Screen, ScreenManager
-from kivy.uix.boxlayout import BoxLayout
-from kivy.properties import ObjectProperty, NumericProperty
 from kivy.lang import Builder
-
-Builder.load_file("main.kv")
-
-# Definir as perguntas do quiz
-QUESTIONS = [
-    {
-        "text": "Qual é a maior organela da célula?",
-        "answers": [
-            "Mitocôndria",
-            "Complexo de Golgi",
-            "Retículo endoplasmático",
-            "Núcleo",
-            "Lisossomo"
-        ],
-        "correct_answer": "Núcleo"
-    },
-    {
-        "text": "Qual é a célula responsável pela defesa do organismo?",
-        "answers": [
-            "Célula-tronco",
-            "Célula nervosa",
-            "Célula muscular",
-            "Célula do sistema imunológico",
-            "Célula de Langerhans"
-        ],
-        "correct_answer": "Célula do sistema imunológico"
-    },
-    {
-        "text": "Qual é o tecido responsável pela condução de impulsos nervosos?",
-        "answers": [
-            "Epitelial",
-            "Muscular",
-            "Nervoso",
-            "Conjuntivo",
-            "Cartilaginoso"
-        ],
-        "correct_answer": "Nervoso"
-    }
-]
+from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.properties import StringProperty, NumericProperty
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+from kivy.uix.button import Button
+import random
 
 
 class MenuScreen(Screen):
@@ -55,36 +19,35 @@ class CreditsScreen(Screen):
 class QuestionsScreen(Screen):
     score = NumericProperty(0)
     question_number = NumericProperty(1)
-    question = ObjectProperty(None)
-    answer_1 = ObjectProperty(None)
-    answer_2 = ObjectProperty(None)
-    answer_3 = ObjectProperty(None)
-    answer_4 = ObjectProperty(None)
-    answer_5 = ObjectProperty(None)
+    question = StringProperty("")
+    answers = []
+    correct_answer = ""
 
-    def on_pre_enter(self, *args):
-        # Exibir a primeira pergunta
-        self.display_question()
-
-    def display_question(self):
-        current_question = QUESTIONS[self.question_number - 1]
-        self.question.text = current_question["text"]
-        self.answer_1.text = current_question["answers"][0]
-        self.answer_2.text = current_question["answers"][1]
-        self.answer_3.text = current_question["answers"][2]
-        self.answer_4.text = current_question["answers"][3]
-        self.answer_5.text = current_question["answers"][4]
-
-    def on_answer_select(self, selected_answer):
-        current_question = QUESTIONS[self.question_number - 1]
-        if selected_answer == current_question["correct_answer"]:
-            self.score += 1
+    def on_pre_enter(self):
         self.question_number += 1
-        if self.question_number <= len(QUESTIONS):
-            self.display_question()
-        else:
-            # Se já exibiu todas as perguntas, exibir a tela de resultados
-            self.manager.current = "credits"
+        self.get_question()
+
+    def get_question(self):
+        with open("questions.txt", "r", encoding="utf-8") as f:
+            questions = f.read().split("\n\n")
+        random_question = random.choice(questions).split("\n")
+        self.question = random_question[0]
+        self.correct_answer = random_question[1]
+        self.answers = random_question[1:]
+        random.shuffle(self.answers)
+
+    def on_answer_select(self, answer):
+        if answer == self.correct_answer:
+            self.score += 1
+        self.manager.current = "questions"
+
+    def on_score(self, instance, score):
+        self.ids.score_label.text = f"Pontuação: {score}"
+
+    def on_question(self, instance, question):
+        self.ids.question_label.text = f"Pergunta {self.question_number}: {question}"
+        for i, answer in enumerate(self.answers):
+            self.ids[f"answer_button_{i}"].text = answer
 
 
 class QuizBIOApp(App):
