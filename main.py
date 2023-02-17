@@ -1,63 +1,67 @@
 from kivy.app import App
-from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen, ScreenManager
-from kivy.properties import StringProperty, NumericProperty
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.label import Label
-from kivy.uix.button import Button
-import random
+from kivy.properties import NumericProperty, StringProperty, ListProperty
+from kivy.clock import Clock
+from kivy.lang import Builder
 
+Builder.load_file("main.kv")
 
-class MenuScreen(Screen):
-    pass
-
-
-class CreditsScreen(Screen):
-    pass
-
-
-class QuestionsScreen(Screen):
+class Quiz(Screen):
     score = NumericProperty(0)
     question_number = NumericProperty(1)
-    question = StringProperty("")
-    answers = []
-    correct_answer = ""
+    question = StringProperty()
+    options = ListProperty([])
+    answer = StringProperty()
 
-    def on_pre_enter(self):
+    def on_enter(self, *args):
+        self.load_question()
+
+    def load_question(self):
+        questions = [
+            {
+                "question": "Qual o maior planeta do sistema solar?",
+                "options": ["Marte", "Vênus", "Júpiter", "Saturno", "Terra"],
+                "answer": "Júpiter"
+            },
+            {
+                "question": "Qual o elemento químico mais abundante na crosta terrestre?",
+                "options": ["Oxigênio", "Silício", "Alumínio", "Ferro", "Cálcio"],
+                "answer": "Oxigênio"
+            },
+            {
+                "question": "Quem é o autor do livro 'Grande Sertão: Veredas'?",
+                "options": ["Machado de Assis", "Guimarães Rosa", "Jorge Amado", "Clarice Lispector", "Lima Barreto"],
+                "answer": "Guimarães Rosa"
+            }
+        ]
+
+        question = questions[self.question_number - 1]
+        self.question = question["question"]
+        self.options = question["options"]
+        self.answer = question["answer"]
+
+    def check_answer(self, answer):
+        if answer == self.answer:
+            self.score += 10
         self.question_number += 1
-        self.get_question()
+        if self.question_number > 3:
+            sm.current = "result"
+        else:
+            Clock.schedule_once(lambda dt: self.load_question())
 
-    def get_question(self):
-        with open("questions.txt", "r", encoding="utf-8") as f:
-            questions = f.read().split("\n\n")
-        random_question = random.choice(questions).split("\n")
-        self.question = random_question[0]
-        self.correct_answer = random_question[1]
-        self.answers = random_question[1:]
-        random.shuffle(self.answers)
+class Result(Screen):
+    score = NumericProperty(0)
 
-    def on_answer_select(self, answer):
-        if answer == self.correct_answer:
-            self.score += 1
-        self.manager.current = "questions"
+class ScreenManagement(ScreenManager):
+    pass
 
-    def on_score(self, instance, score):
-        self.ids.score_label.text = f"Pontuação: {score}"
+sm = ScreenManagement()
+sm.add_widget(Quiz(name="quiz"))
+sm.add_widget(Result(name="result"))
 
-    def on_question(self, instance, question):
-        self.ids.question_label.text = f"Pergunta {self.question_number}: {question}"
-        for i, answer in enumerate(self.answers):
-            self.ids[f"answer_button_{i}"].text = answer
-
-
-class QuizBIOApp(App):
+class QuizApp(App):
     def build(self):
-        sm = ScreenManager()
-        sm.add_widget(MenuScreen(name="menu"))
-        sm.add_widget(CreditsScreen(name="credits"))
-        sm.add_widget(QuestionsScreen(name="questions"))
         return sm
 
-
 if __name__ == "__main__":
-    QuizBIOApp().run()
+    QuizApp().run()

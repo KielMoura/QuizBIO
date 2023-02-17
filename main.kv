@@ -1,72 +1,53 @@
-<MenuScreen>:
-    BoxLayout:
-        orientation: "vertical"
-        spacing: dp(50)
-        padding: dp(50)
-        Label:
-            text: "Quiz BIO"
-            font_size: "40sp"
-            color: 1, 1, 1, 1
-        Button:
-            text: "Iniciar Jogo"
-            on_release: app.root.current = "questions"
-            font_size: "20sp"
-        Button:
-            text: "Créditos"
-            on_release: app.root.current = "credits"
-            font_size: "20sp"
+<Quiz>:
+    GridLayout:
+        cols: 1
 
-<CreditsScreen>:
-    BoxLayout:
-        orientation: "vertical"
-        spacing: dp(50)
-        padding: dp(50)
         Label:
-            text: "Créditos"
-            font_size: "40sp"
-            color: 1, 1, 1, 1
-        Label:
-            text: "Desenvolvido por Kiel Moura"
-            font_size: "20sp"
-            color: 1, 1, 1, 1
-        Button:
-            text: "Voltar ao menu"
-            on_release: app.root.current = "menu"
-            font_size: "20sp"
+            text: "Pergunta " + str(root.question_number) + " de 3"
+            size_hint_y: None
+            height: self.texture_size[1]
 
-<QuestionsScreen>:
-    score: 0
-    question_number: 0
-    BoxLayout:
-        orientation: "vertical"
-        spacing: dp(50)
-        padding: dp(50)
         Label:
-            id: question_label
-            font_size: "30sp"
-            color: 1, 1, 1, 1
+            text: root.question
+            size_hint_y: None
+            height: self.texture_size[1]
+
         BoxLayout:
             orientation: "vertical"
-            spacing: dp(20)
-            padding: dp(20)
+            spacing: "5dp"
+
             Button:
-                id: answer_button_0
-                font_size: "20sp"
-                on_release: root.on_answer_select(self.text)
+                text: root.options[0]
+                on_release: root.check_answer(root.options[0])
             Button:
-                id: answer_button_1
-                font_size: "20sp"
-                on_release: root.on_answer_select(self.text)
+                text: root.options[1]
+                on_release: root.check_answer(root.options[1])
             Button:
-                id: answer_button_2
-                font_size: "20sp"
-                on_release: root.on_answer_select(self.text)
+                text: root.options[2]
+                on_release: root.check_answer(root.options[2])
             Button:
-                id: answer_button_3
-                font_size: "20sp"
-                on_release: root.on_answer_select(self.text)
+                text: root.options[3]
+                on_release: root.check_answer(root.options[3])
+            Button:
+                text: root.options[4]
+                on_release: root.check_answer(root.options[4])
+
         Label:
-            id: score_label
-            text: f"Pontuação: {root.score}"
-            font_size: "20sp"
-            color: 1, 1, 1, 1
+            text: "Pontuação: " + str(root.score)
+            size_hint_y: None
+            height: self.texture_size[1]
+
+<Result>:
+    GridLayout:
+        cols: 1
+
+        Label:
+            text: "Sua pontuação: " + str(root.score)
+            size_hint_y: None
+            height: self.texture_size[1]
+
+<ScreenManagement>:
+    Quiz:
+        name: "quiz"
+    Result:
+        name: "result"
