@@ -1,25 +1,57 @@
-from kivymd.app import MDApp
-from kivy.lang import Builder
+from kivy.app import App
 from kivy.uix.screenmanager import Screen, ScreenManager
-from kivy.properties import NumericProperty, ObjectProperty
-from kivy.core.window import Window
+from kivy.uix.boxlayout import BoxLayout
+from kivy.properties import ObjectProperty, NumericProperty
+from kivy.lang import Builder
 
-Window.size= 320, 650
+Builder.load_file("main.kv")
 
-# Definição do gerenciador de tela
-class JanelaGerenciadora(ScreenManager):
-    pass
+# Definir as perguntas do quiz
+QUESTIONS = [
+    {
+        "text": "Qual é a maior organela da célula?",
+        "answers": [
+            "Mitocôndria",
+            "Complexo de Golgi",
+            "Retículo endoplasmático",
+            "Núcleo",
+            "Lisossomo"
+        ],
+        "correct_answer": "Núcleo"
+    },
+    {
+        "text": "Qual é a célula responsável pela defesa do organismo?",
+        "answers": [
+            "Célula-tronco",
+            "Célula nervosa",
+            "Célula muscular",
+            "Célula do sistema imunológico",
+            "Célula de Langerhans"
+        ],
+        "correct_answer": "Célula do sistema imunológico"
+    },
+    {
+        "text": "Qual é o tecido responsável pela condução de impulsos nervosos?",
+        "answers": [
+            "Epitelial",
+            "Muscular",
+            "Nervoso",
+            "Conjuntivo",
+            "Cartilaginoso"
+        ],
+        "correct_answer": "Nervoso"
+    }
+]
 
-# Definição da tela principal
+
 class MenuScreen(Screen):
     pass
 
-# Definição da tela de créditos
+
 class CreditsScreen(Screen):
     pass
 
 
-# Definição da tela de perguntas
 class QuestionsScreen(Screen):
     score = NumericProperty(0)
     question_number = NumericProperty(1)
@@ -30,76 +62,39 @@ class QuestionsScreen(Screen):
     answer_4 = ObjectProperty(None)
     answer_5 = ObjectProperty(None)
 
-    # Lista de perguntas e respostas
-    questions = [
-        {
-            "question": "Qual é a capital da França?",
-            "answers": [
-                "Londres",
-                "Madrid",
-                "Paris",
-                "Berlim",
-                "Roma"
-            ],
-            "correct_answer": "Paris"
-        },
-        {
-            "question": "Qual é o maior animal terrestre?",
-            "answers": [
-                "Elefante",
-                "Girafa",
-                "Rinoceronte",
-                "Hipopótamo",
-                "Leão"
-            ],
-            "correct_answer": "Elefante"
-        },
-        {
-            "question": "Qual é a capital da Austrália?",
-            "answers": [
-                "Sydney",
-                "Melbourne",
-                "Canberra",
-                "Brisbane",
-                "Adelaide"
-            ],
-            "correct_answer": "Canberra"
-        }
-    ]
+    def on_pre_enter(self, *args):
+        # Exibir a primeira pergunta
+        self.display_question()
 
-    # Inicialização da tela de perguntas
-    def on_enter(self):
-        self.load_question()
+    def display_question(self):
+        current_question = QUESTIONS[self.question_number - 1]
+        self.question.text = current_question["text"]
+        self.answer_1.text = current_question["answers"][0]
+        self.answer_2.text = current_question["answers"][1]
+        self.answer_3.text = current_question["answers"][2]
+        self.answer_4.text = current_question["answers"][3]
+        self.answer_5.text = current_question["answers"][4]
 
-    # Carrega a próxima pergunta na tela
-    def load_question(self):
-        question_data = self.questions[self.question_number - 1]
-        self.question.text = question_data["question"]
-        self.answer_1.text = question_data["answers"][0]
-        self.answer_2.text = question_data["answers"][1]
-        self.answer_3.text = question_data["answers"][2]
-        self.answer_4.text = question_data["answers"][3]
-        self.answer_5.text = question_data["answers"][4]
-
-    # Lida com a seleção de uma resposta
-    def on_answer_select(self, answer_text):
-        question_data = self.questions[self.question_number - 1]
-        if answer_text == question_data["correct_answer"]:
+    def on_answer_select(self, selected_answer):
+        current_question = QUESTIONS[self.question_number - 1]
+        if selected_answer == current_question["correct_answer"]:
             self.score += 1
         self.question_number += 1
-        if self.question_number > len(self.questions):
-            self.manager.current = "menu"
+        if self.question_number <= len(QUESTIONS):
+            self.display_question()
         else:
-            self.load_question()
+            # Se já exibiu todas as perguntas, exibir a tela de resultados
+            self.manager.current = "credits"
 
 
-# Definição do aplicativo
-class QuestionsApp(MDApp):
+class QuizBIOApp(App):
     def build(self):
-        self.title = "QuizBio"
-#        screen_manager = Builder.load_file('main.kv')
-#        return screen_manager
-        return Builder.load_file('main.kv')
+        sm = ScreenManager()
+        sm.add_widget(MenuScreen(name="menu"))
+        sm.add_widget(CreditsScreen(name="credits"))
+        sm.add_widget(QuestionsScreen(name="questions"))
+        return sm
 
-QuestionsApp().run()
 
+if __name__ == "__main__":
+    QuizBIOApp().run()

@@ -1,8 +1,3 @@
-JanelaGerenciadora:
-    MenuScreen:
-    CreditsScreen:
-    QuestionsScreen:
-
 <MenuScreen>:
     name: "menu"
 
@@ -15,19 +10,19 @@ JanelaGerenciadora:
             text: "Bem-vindo ao meu aplicativo de perguntas e respostas!"
             halign: "center"
             font_style: "H5"
-#            size_hint_y: None
+            size_hint_y: None
             height: "40dp"
 
         MDRaisedButton:
             text: "Começar"
             on_release: app.root.current = "questions"
-#            size_hint_y: None
+            size_hint_y: None
             height: "50dp"
 
         MDRaisedButton:
             text: "Créditos"
             on_release: app.root.current = "credits"
-#            size_hint_y: None
+            size_hint_y: None
             height: "50dp"
 
 
@@ -43,14 +38,15 @@ JanelaGerenciadora:
             text: "Autor: Isaquiel Sousa"
             halign: "center"
             font_style: "H5"
-#            size_hint_y: None
+            size_hint_y: None
             height: "40dp"
 
         MDRaisedButton:
             text: "Voltar"
             on_release: app.root.current = "menu"
-#            size_hint_y: None
+            size_hint_y: None
             height: "50dp"
+
 
 <QuestionsScreen>:
     name: "questions"
@@ -67,19 +63,19 @@ JanelaGerenciadora:
             text: "Pergunta {}: {}".format(root.question_number, root.question.text)
             halign: "center"
             font_style: "H5"
-#            size_hint_y: None
+            size_hint_y: None
             height: "40dp"
 
         MDRaisedButton:
             text: root.answer_1.text
             on_release: root.on_answer_select(root.answer_1.text)
-#            size_hint_y: None
+            size_hint_y: None
             height: "50dp"
 
         MDRaisedButton:
             text: root.answer_2.text
             on_release: root.on_answer_select(root.answer_2.text)
-#            size_hint_y: None
+            size_hint_y: None
             height: "50dp"
 
         MDRaisedButton:
@@ -91,19 +87,19 @@ JanelaGerenciadora:
         MDRaisedButton:
             text: root.answer_4.text
             on_release: root.on_answer_select(root.answer_4.text)
-#            size_hint_y: None
+            size_hint_y: None
             height: "50dp"
 
         MDRaisedButton:
             text: root.answer_5.text
             on_release: root.on_answer_select(root.answer_5.text)
-#            size_hint_y: None
+            size_hint_y: None
             height: "50dp"
 
         MDLabel:
             text: "Pontuação: {}".format(root.score)
             halign: "center"
             font_style: "H6"
-#            size_hint_y: None
+            size_hint_y: None
             height: "40dp"
-
+            
